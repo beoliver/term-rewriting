@@ -1,6 +1,7 @@
 (ns term-rewriting.core-test
   (:require [clojure.test :refer :all]
-            [term-rewriting.core :as core]))
+            [term-rewriting.core :as core]
+            [term-rewriting.term :as term]))
 
 (defn variable [x] (core/variable x))
 (defn const [x] (core/constant x))
@@ -29,3 +30,11 @@
                       (f a z b)]))
   (is (core/unifies? [(f (g a) (h x)    y      )
                       (f   x     y   (h (g z)) )])))
+
+
+(deftest substitution-test
+  (let [sigma {x (f x y)
+               y (g x y)}
+        t (h x y)]
+    (is (= (h (f x y) (g x y))
+           (term/substitute t sigma)))))
