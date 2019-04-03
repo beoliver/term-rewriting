@@ -3,6 +3,7 @@
             [term-rewriting.substitutions :as s]
             [term-rewriting.predicate :as p]
             [term-rewriting.fol :as fol]
+            [term-rewriting.emitters.leancop :as emit]
             [clojure.set :as set]))
 
 (defprotocol IMatrix
@@ -13,6 +14,13 @@
   (update-clause [matrix clause]))
 
 (defrecord Matrix [problem-id index->clause term->indexes predicates pos-eqs neg-eqs]
+  emit/LeanCopEmitter
+  (emit-str [matrix]
+    (->> (vals index->clause)
+         (map emit/emit-str)
+         (interpose ", ")
+         (apply str)
+         (format "cnf('%s', conjecture, [%s])." problem-id)))
   IMatrix
   (clause-by-index [matrix clause-index]
     (get index->clause clause-index))

@@ -1,6 +1,7 @@
 (ns term-rewriting.clause
   (:require [term-rewriting.substitutions :as s]
             [term-rewriting.predicate :as p]
+            [term-rewriting.emitters.leancop :as emit]
             [clojure.set :as set]))
 
 (defprotocol IClause
@@ -25,7 +26,14 @@
     (update clause :forms disj formula))
   s/ISubstitutable
   (substitute [clause sigma]
-    (assoc clause :forms (set (map #(s/substitute % sigma) forms)))))
+    (assoc clause :forms (set (map #(s/substitute % sigma) forms))))
+  emit/LeanCopEmitter
+  (emit-str [clause]
+    (->> forms
+         (map emit/emit-str)
+         (interpose ", ")
+         (apply str)
+         (format "[%s]"))))
 
 (defn clause? [x]
   (instance? Clause x))

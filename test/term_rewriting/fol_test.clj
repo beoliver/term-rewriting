@@ -4,6 +4,7 @@
             [term-rewriting.unifiers :as u]
             [term-rewriting.matrix :as matrix]
             [term-rewriting.parsers.leancop :as parser]
+            [term-rewriting.emitters.leancop :as emit]
             [term-rewriting.substitutions :as s]))
 
 (defn variable [x] (fol/variable x))

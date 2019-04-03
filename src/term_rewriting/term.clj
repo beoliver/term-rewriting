@@ -9,14 +9,14 @@
   (subterms   [term]))
 
 (defn term? [t]
-  (instance? ITerm t))
+  (satisfies? ITerm t))
 
 (defn subterm? [s t]
   (contains? (set (subterms t)) s))
 
 (defn constant? [s]
   (and (function? s)
-       (nil? (seq (args s)))))
+       (empty? (args s))))
 
 (defn arity [x]
   (count (args x)))
