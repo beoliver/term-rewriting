@@ -27,8 +27,8 @@
                                                 ::error
                                                 (let [sigma {s t}  ; implements the ISubstitution interface
                                                       sigma-fn (fn [[a b]]
-                                                                 [(term/substitute a sigma)
-                                                                  (term/substitute b sigma)])]
+                                                                 [(substitutions/substitute a sigma)
+                                                                  (substitutions/substitute b sigma)])]
                                                   (recur (conj (map sigma-fn seen) pair) (map sigma-fn unseen))))
                            :else              (recur (conj seen pair) unseen)))]
         (when-not (= result ::error)
@@ -36,3 +36,12 @@
             (if (= unifier previous-unifier)
               (into {} unifier) ; implements the ISubstitution interface
               (recur unifier))))))))
+
+
+(defn mgu
+  "each pair is a vector [s t]. Returns a mgu if one exists."
+  [& term-pairs]
+  (apply most-general-unifier-martelli-and-montanari-algorithm-1 term-pairs))
+
+(defn unifies? [& term-pairs]
+  (boolean (apply mgu term-pairs)))

@@ -1,7 +1,8 @@
 (ns term-rewriting.substitutions
-  (:require [term-rewriting.term :as term]
-            [clojure.set :as set])
   (:import clojure.lang.IPersistentMap))
+
+(defprotocol ISubstitutable
+  (substitute [this sigma]))
 
 (defprotocol ISubstitution
   (make-empty [this] "return a new empty substitution")
