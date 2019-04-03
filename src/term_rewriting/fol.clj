@@ -94,6 +94,14 @@
   (and (pred/predicate? x)
        (= ::equality (pred/label x))))
 
+(defn pos-predicate? [x]
+  (and (not= ::equality (pred/label x))
+       (pred/positive? x)))
+
+(defn neg-predicate? [x]
+  (and (not= ::equality (pred/label x))
+       (not (pred/positive? x))))
+
 (defn pos-equality? [x]
   (and (equality? x)
        (pred/positive? x)))
