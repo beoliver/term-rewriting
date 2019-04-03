@@ -2,6 +2,8 @@
   (:require [clojure.test :refer :all]
             [term-rewriting.fol :as fol]
             [term-rewriting.unifiers :as u]
+            [term-rewriting.matrix :as matrix]
+            [term-rewriting.parsers.leancop :as parser]
             [term-rewriting.substitutions :as s]))
 
 (defn variable [x] (fol/variable x))

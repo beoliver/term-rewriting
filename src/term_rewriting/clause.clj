@@ -1,6 +1,7 @@
 (ns term-rewriting.clause
   (:require [term-rewriting.substitutions :as s]
-            [term-rewriting.predicate :as p]))
+            [term-rewriting.predicate :as p]
+            [clojure.set :as set]))
 
 (defprotocol IClause
   (subterms [clause])
@@ -13,9 +14,9 @@
 (defrecord Clause [index forms]
   IClause
   (subterms [clause]
-    (apply set (map p/subterms forms)))
+    (reduce set/union (map p/subterms forms)))
   (vars [clause]
-    (apply set (map p/vars forms)))
+    (reduce set/union (map p/vars forms)))
   (index [clause] (:index clause))
   (formulae [clause] forms)
   (add-formula [clause formula]

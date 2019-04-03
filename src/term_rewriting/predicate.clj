@@ -8,7 +8,7 @@
   (positive?  [predicate]))
 
 (defn predicate? [x]
-  (instance? IPredicate x))
+  (satisfies? IPredicate x))
 
 (defn arity [x]
   (count (args x)))

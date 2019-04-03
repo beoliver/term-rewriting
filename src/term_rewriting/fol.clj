@@ -34,7 +34,7 @@
   (substitute [term sigma]
     (let [term' (substitutions/lookup sigma term)]
       (if (= term term')
-        (update term :fargs #(seq (map (fn [arg] (substitutions/substitute arg sigma)) %)))
+        (update term :fargs #(mapv (fn [arg] (substitutions/substitute arg sigma)) %))
         term'))))
 
 (defrecord Predicate [plabel pargs sign]
@@ -52,7 +52,7 @@
   (positive? [pred] sign)
   substitutions/ISubstitutable
   (substitute [pred sigma]
-    (update pred :pargs #(seq (map (fn [arg] (substitutions/substitute arg sigma)) %)))))
+    (update pred :pargs #(mapv (fn [arg] (substitutions/substitute arg sigma)) %))))
 
 (defrecord Equality [comparator left right sign]
   pred/IPredicate
@@ -68,16 +68,19 @@
                               (assoc :left l)
                               (assoc :right r)))))
 
-(defn variable [label] (->Variable label))
+(defn variable
+  ([] (variable (gensym "x")))
+  ([label]
+   (->Variable label)))
 
-(defn function [label args] (->Function label (seq args)))
+(defn function [label args] (->Function label (vec args)))
 
-(defn constant [label] (->Function label nil))
+(defn constant [label] (->Function label []))
 
 (defn predicate
-  ([label] (predicate label nil true))
+  ([label] (predicate label [] true))
   ([label args] (predicate label args true))
-  ([label args sign] (predicate label args (boolean sign))))
+  ([label args sign] (->Predicate label (vec args) (boolean sign))))
 
 (defn equality
   ([left right] (equality left right true))

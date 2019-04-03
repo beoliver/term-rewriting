@@ -8,7 +8,7 @@
 (defprotocol IMatrix
   (clause-by-index [matrix clause-index])
   (next-index [matrix])
-  (insert-clause [matrix clause-index])
+  (insert-clause [matrix clause])
   (delete-clause-by-index [matrix clause-index])
   (update-clause [matrix clause]))
 
@@ -17,7 +17,7 @@
   (clause-by-index [matrix clause-index]
     (get index->clause clause-index))
   (next-index [matrix]
-    (inc (apply max (keys index->clause))))
+    (inc (apply max (or (keys index->clause) [0]))))
   (insert-clause [matrix clause]
     (let [index (clause/index clause)
           subterms (clause/subterms clause)
@@ -25,7 +25,7 @@
           clause-contains-pos-eq? (some fol/pos-equality? forms)
           clause-contains-neg-eq? (some fol/neg-equality? forms)]
       (-> matrix
-          (assoc  :index->clause index clause)
+          (assoc-in [:index->clause index] clause)
           (update :pos-eqs #(if clause-contains-pos-eq? (set/union % #{index}) %))
           (update :neg-eqs #(if clause-contains-neg-eq? (set/union % #{index}) %))
           (update :predicates #(reduce (fn [table form]
@@ -70,7 +70,7 @@
   s/ISubstitutable
   (substitute [matrix sigma]
     (let [dom (set (s/domain sigma))
-          candidate-clause-indexes (apply set (select-keys term->indexes dom))]
+          candidate-clause-indexes (reduce set/union (select-keys term->indexes dom))]
       (reduce (fn [matrix clause-index]
                 (let [clause (clause-by-index matrix clause-index)
                       clause' (s/substitute clause sigma)]
@@ -81,9 +81,15 @@
               candidate-clause-indexes))))
 
 (defn matrix
-  ([m] (map->Matrix m))
+  ([id] (matrix id nil))
   ([id clauses]
    (reduce (fn [matrix clause]
              (insert-clause matrix clause))
-           (map->Matrix {:problem-id id})
+           (map->Matrix
+            {:problem-id id
+             :index->clause {}
+             :term->indexes {}
+             :predicates {}
+             :pos-eqs #{}
+             :neg-eqs #{}})
            (set clauses))))
