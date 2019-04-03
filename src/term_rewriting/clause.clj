@@ -39,6 +39,9 @@
   (instance? Clause x))
 
 (defn unit-clause? [clause]
+  (= (count (formulae clause)) 1))
+
+(defn empty-clause? [clause]
   (= (count (formulae clause)) 0))
 
 (defn clause

@@ -5,7 +5,8 @@
             [term-rewriting.matrix :as matrix]
             [term-rewriting.parsers.leancop :as parser]
             [term-rewriting.emitters.leancop :as emit]
-            [term-rewriting.substitutions :as s]))
+            [term-rewriting.substitutions :as s]
+            [term-rewriting.reductions.rules :as reduction-rules]))
 
 (defn variable [x] (fol/variable x))
 (defn const [x] (fol/constant x))

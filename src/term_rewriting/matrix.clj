@@ -8,6 +8,8 @@
 
 (defprotocol IMatrix
   (clause-by-index [matrix clause-index])
+  (clause-indexes [matrix])
+  (indexes-of-clauses-containing-positive-equality [matrix])
   (next-index [matrix])
   (insert-clause [matrix clause])
   (delete-clause-by-index [matrix clause-index])
@@ -24,6 +26,8 @@
   IMatrix
   (clause-by-index [matrix clause-index]
     (get index->clause clause-index))
+  (clause-indexes [matrix] (keys index->clause))
+  (indexes-of-clauses-containing-positive-equality [matrix] pos-eqs)
   (next-index [matrix]
     (inc (apply max (or (keys index->clause) [0]))))
   (insert-clause [matrix clause]

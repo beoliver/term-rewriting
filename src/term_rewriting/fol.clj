@@ -102,6 +102,8 @@
 (defn predicate? [x] (instance? Predicate x))
 
 (defrecord Equality [comparator left right sign]
+  unifiers/IUnifiable
+  (as-vector-pair [this] [left right])
   pred/IPredicate
   (label [e] ::equality)
   (args  [e] [left right])
@@ -109,7 +111,8 @@
   (subterms [e] (set/union (term/subterms left) (term/subterms right)))
   (positive? [e] sign)
   substitutions/ISubstitutable
-  (substitute [e sigma] (let [tmp [(substitutions/substitute left sigma) (substitutions/substitute right sigma)]
+  (substitute [e sigma] (let [tmp [(substitutions/substitute left sigma)
+                                   (substitutions/substitute right sigma)]
                               [l r] (if comparator (sort comparator tmp) tmp)]
                           (-> e
                               (assoc :left l)

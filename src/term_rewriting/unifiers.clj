@@ -37,11 +37,19 @@
               (into {} unifier) ; implements the ISubstitution interface
               (recur unifier))))))))
 
+(defprotocol IUnifiable
+  (as-vector-pair [this]))
+
+(extend-type clojure.lang.IPersistentVector
+  IUnifiable
+  (as-vector-pair [this] this))
 
 (defn mgu
-  "each pair is a vector [s t]. Returns a mgu if one exists."
-  [& term-pairs]
-  (apply most-general-unifier-martelli-and-montanari-algorithm-1 term-pairs))
+  "each item should implement `IUnifiable`.
+   Vectors are default implementeation"
+  [& unifiables]
+  (apply most-general-unifier-martelli-and-montanari-algorithm-1
+         (map as-vector-pair unifiables)))
 
-(defn unifies? [& term-pairs]
-  (boolean (apply mgu term-pairs)))
+(defn unifies? [& unifiables]
+  (boolean (apply mgu unifiables)))
