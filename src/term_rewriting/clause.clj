@@ -48,3 +48,6 @@
   ([index] (clause index #{}))
   ([index formulae]
    (map->Clause {:index index :forms (set formulae)})))
+
+(defn swap-formulae [clause formulae]
+  (assoc clause :forms (set formulae)))

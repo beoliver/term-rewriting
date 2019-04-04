@@ -3,9 +3,11 @@
             [term-rewriting.fol :as fol]
             [term-rewriting.unifiers :as u]
             [term-rewriting.matrix :as matrix]
+            [term-rewriting.clause :as clause]
             [term-rewriting.parsers.leancop :as parser]
             [term-rewriting.emitters.leancop :as emit]
             [term-rewriting.substitutions :as s]
+            [term-rewriting.analyis.statistics :as stats]
             [term-rewriting.reductions.rules :as reduction-rules]))
 
 (defn variable [x] (fol/variable x))
@@ -42,3 +44,8 @@
         t (h x y)]
     (is (= (fol/equality a (h (f x y) (g x y)))
            (s/substitute (fol/equality a t) sigma)))))
+
+
+(defn stats [path]
+  (-> (parser/parse-path path)
+      stats/generate-stats))

@@ -2,6 +2,7 @@
   (:require [term-rewriting.clause :as clause]
             [term-rewriting.substitutions :as s]
             [term-rewriting.predicate :as p]
+            [term-rewriting.term :as term]
             [term-rewriting.fol :as fol]
             [term-rewriting.emitters.leancop :as emit]
             [clojure.set :as set]))
@@ -23,6 +24,9 @@
          (interpose ", ")
          (apply str)
          (format "cnf('%s', conjecture, [%s])." problem-id)))
+  term/ITerm
+  (subterms [matrix] (keys term->indexes))
+  (vars [matrix] (filter term/variable? (keys term->indexes)))
   IMatrix
   (clause-by-index [matrix clause-index]
     (get index->clause clause-index))
